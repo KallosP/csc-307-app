@@ -38,6 +38,10 @@ const findUserByName = (name) => {
   return users["users_list"].filter((user) => user["name"] === name);
 };
 
+const findUserByNameAndJob = (name, job) => {
+  return findUserByName(name).filter((user) => user["job"] === job);
+};
+
 const findUserById = (id) =>
   // find returns the first occurrence that matches the condition,
   // useful in this case since id is unique
@@ -63,7 +67,16 @@ app.get("/", (req, res) => {
 
 app.get("/users", (req, res) => {
   const name = req.query.name;
-  if (name != undefined) {
+  const job = req.query.job;
+
+  // check if both name and job are provided
+  if (name != undefined && job != undefined) {
+    let result = findUserByNameAndJob(name, job);
+    result = { users_list: result };
+    res.send(result);
+  }
+  // check if only name is provided
+  else if (name != undefined) {
     let result = findUserByName(name);
     result = { users_list: result };
     res.send(result);
