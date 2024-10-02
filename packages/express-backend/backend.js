@@ -48,6 +48,13 @@ const addUser = (user) => {
   return user;
 };
 
+const removeUser = (id) => {
+  return (users["users_list"] = users["users_list"].filter(
+    // if current user id is equal to input id, filter it out 
+    (user) => user["id"] !== id
+  ));
+};
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -78,6 +85,12 @@ app.get("/users/:id", (req, res) => {
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
   addUser(userToAdd);
+  res.send();
+});
+
+app.delete("/users/:id", (req, res) => {
+  const id = req.params["id"];
+  removeUser(id);
   res.send();
 });
 
