@@ -1,5 +1,6 @@
 // backend.js
 import express from "express";
+import cors from "cors";
 
 const app = express();
 const port = 8000;
@@ -59,6 +60,9 @@ const removeUser = (id) => {
   ));
 };
 
+// Open backend routes to requests from anywhere
+// Gets rid of "No-access-control-allow-origin" error
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
