@@ -16,7 +16,19 @@ function MyApp() {
 
   function updateList(person) {
     postUser(person)
-      .then(() => setCharacters([...characters, person]))
+      .then((res) => {
+        // Prevent table update for non-201 status
+        if (res.status != 201) {
+          throw new Error("Unexpected status code: " + res.status);
+        }
+        // Return the same new user inserted in the backend
+        return res.json();
+      })
+      .then((newPerson) => {
+        // Use the returned new user from the backend in
+        // the frontend table
+        setCharacters([...characters, newPerson])
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -27,6 +39,7 @@ function MyApp() {
     return promise;
   }
 
+  // Make a POST request to the backend to add a new user
   function postUser(person) {
     const promise = fetch("http://localhost:8000/users", {
       method: "POST",

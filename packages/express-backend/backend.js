@@ -35,6 +35,10 @@ const users = {
   ],
 };
 
+const idGenerator = () => {
+  return Math.floor(Math.random() * 1000000);
+}
+
 const findUserByName = (name) => {
   return users["users_list"].filter((user) => user["name"] === name);
 };
@@ -101,8 +105,10 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
-  addUser(userToAdd);
-  res.send();
+  // Provide an ID for the new user
+  userToAdd["id"] = idGenerator();
+  const newUser = addUser(userToAdd);
+  res.status(201).send(newUser);
 });
 
 app.delete("/users/:id", (req, res) => {
