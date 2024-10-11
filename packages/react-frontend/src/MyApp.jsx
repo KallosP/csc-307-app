@@ -8,10 +8,22 @@ function MyApp() {
   const [characters, setCharacters] = useState([]);
 
   function removeOneCharacter(index) {
-    const updated = characters.filter((character, i) => {
-      return i !== index;
-    });
-    setCharacters(updated);
+    const idAtIndex = characters.at(index).id
+    deleteUser(idAtIndex)
+      .then((res) => {
+        if (res.status != 204) {
+          throw new Error("Unexpected status code: " + res.status);
+        } 
+      })
+      .then(() => {
+        const updated = characters.filter((character, i) => {
+          return i !== index;
+        });
+        setCharacters(updated);
+      })
+      .catch((error) => {
+        console.log(error)
+      });
   }
 
   function updateList(person) {
@@ -27,7 +39,7 @@ function MyApp() {
       .then((newPerson) => {
         // Use the returned new user from the backend in
         // the frontend table
-        setCharacters([...characters, newPerson])
+        setCharacters([...characters, newPerson]);
       })
       .catch((error) => {
         console.log(error);
@@ -49,6 +61,14 @@ function MyApp() {
       body: JSON.stringify(person),
     });
 
+    return promise;
+  }
+
+  function deleteUser(id) {
+    // Build URL string to delete with string interpolation
+    const promise = fetch(`http://localhost:8000/users/${id}`, {
+      method: "DELETE"
+    });
     return promise;
   }
 

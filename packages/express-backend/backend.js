@@ -36,7 +36,7 @@ const users = {
 };
 
 const idGenerator = () => {
-  return Math.floor(Math.random() * 1000000);
+  return String(Math.floor(Math.random() * 1000000));
 }
 
 const findUserByName = (name) => {
@@ -113,8 +113,13 @@ app.post("/users", (req, res) => {
 
 app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];
-  removeUser(id);
-  res.send();
+  let result = findUserById(id);
+  if (result === undefined) {
+    res.status(404).send("Resource not found.");
+  } else {
+    removeUser(id);
+    res.status(204).send();
+  }
 });
 
 app.listen(port, () => {
