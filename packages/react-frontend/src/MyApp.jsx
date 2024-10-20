@@ -1,4 +1,5 @@
 // src/MyApp.jsx
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import Table from "./Table";
 import Form from "./Form";
@@ -7,17 +8,17 @@ function MyApp() {
   // Contains our data in the character state by the MyApp component
   const [characters, setCharacters] = useState([]);
 
-  function removeOneCharacter(index) {
-    const idAtIndex = characters.at(index).id
-    deleteUser(idAtIndex)
+  function removeOneCharacter(id) {
+    deleteUser(id)
       .then((res) => {
         if (res.status != 204) {
           throw new Error("Unexpected status code: " + res.status);
         } 
       })
+      // Only update the frontend user table if the backend response was successful
       .then(() => {
-        const updated = characters.filter((character, i) => {
-          return i !== index;
+        const updated = characters.filter((character) => {
+          return character._id !== id;
         });
         setCharacters(updated);
       })
@@ -39,7 +40,7 @@ function MyApp() {
       .then((newPerson) => {
         // Use the returned new user from the backend in
         // the frontend table
-        setCharacters([...characters, newPerson]);
+        setCharacters([...(characters || []), newPerson]);
       })
       .catch((error) => {
         console.log(error);
